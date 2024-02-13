@@ -10,7 +10,6 @@ namespace rimstocks;
 public class WorldComponent_PriceSaveLoad : WorldComponent
 {
     public static WorldComponent_PriceSaveLoad staticInstance;
-    public Dictionary<string, FactionData> ar_factionData = new Dictionary<string, FactionData>();
     public Dictionary<string, FactionPriceData> factionToPriceData = new Dictionary<string, FactionPriceData>();
     public bool initialized;
 
@@ -115,49 +114,5 @@ public class WorldComponent_PriceSaveLoad : WorldComponent
                 rs.defname = util.keyToFactionDefName(key);
             }
         }
-    }
-
-    public override void ExposeData()
-    {
-        Scribe_Values.Look(ref initialized, "initialized");
-        Scribe_Collections.Look(ref factionToPriceData, "yayo_FactionPriceData", LookMode.Value, LookMode.Deep);
-        Scribe_Collections.Look(ref ar_factionData, "yayo_FactionData", LookMode.Value, LookMode.Deep);
-        if (ar_factionData != null)
-        {
-            return;
-        }
-
-        foreach (var f in Find.FactionManager.AllFactions)
-        {
-            var data = new FactionData();
-            ar_factionData?.Add(f.GetUniqueLoadID(), data);
-        }
-    }
-
-
-    public static FactionData getFactionData(Faction f)
-    {
-        return staticInstance.getFactionData_p(f);
-    }
-
-    public FactionData getFactionData_p(Faction f)
-    {
-        var Key = f.GetUniqueLoadID();
-        if (ar_factionData.TryGetValue(Key, out var p))
-        {
-            return p;
-        }
-
-        var data = new FactionData
-        {
-            loan = 0,
-            loan_targetTick = 0,
-            loan_totalTick = 0,
-            loan_per = 0f,
-            loan_raidMulti = 0f
-        };
-        ar_factionData.Add(Key, data);
-
-        return ar_factionData[Key];
     }
 }

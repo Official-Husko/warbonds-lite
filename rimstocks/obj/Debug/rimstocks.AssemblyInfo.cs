@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("rimstocks")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.4.2")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aeabcf10d04c0a95da288f75e39e00535cbd244a")]
 [assembly: System.Reflection.AssemblyProductAttribute("rimstocks")]
 [assembly: System.Reflection.AssemblyTitleAttribute("rimstocks")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
