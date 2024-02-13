@@ -7,6 +7,7 @@ namespace rimstocks;
 
 public class FactionPriceData : IExposable
 {
+    public const int modularTicksUnit = 60000;
     public Color color;
     public string defname;
     public bool graphEnabled = true;
@@ -31,7 +32,7 @@ public class FactionPriceData : IExposable
 
     public void savePrice(float tick, float price)
     {
-        var unitTime = Mathf.FloorToInt(tick / Harmony_SomeNamespace.modularTicksUnit);
+        var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToPriceData.ContainsKey(unitTime))
         {
             timeToPriceData.Remove(unitTime);
@@ -42,7 +43,7 @@ public class FactionPriceData : IExposable
 
     public float loadPrice(float tick)
     {
-        var unitTime = Mathf.FloorToInt(tick / Harmony_SomeNamespace.modularTicksUnit);
+        var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToPriceData.TryGetValue(unitTime, out var price))
         {
             return price;
@@ -60,7 +61,7 @@ public class FactionPriceData : IExposable
 
     public void saveTrend(float tick, float trend)
     {
-        var unitTime = Mathf.FloorToInt(tick / Harmony_SomeNamespace.modularTicksUnit);
+        var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToTrendData.ContainsKey(unitTime))
         {
             timeToTrendData.Remove(unitTime);
@@ -71,7 +72,7 @@ public class FactionPriceData : IExposable
 
     public float loadTrend(float tick)
     {
-        var unitTime = Mathf.FloorToInt(tick / Harmony_SomeNamespace.modularTicksUnit);
+        var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToTrendData.TryGetValue(unitTime, out var trend))
         {
             return trend;
