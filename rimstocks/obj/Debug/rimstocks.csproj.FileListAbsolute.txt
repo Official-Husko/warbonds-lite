@@ -1,8 +1,0 @@
-Z:\Projects\CSharp\1.4\Assemblies\rimstocks.dll
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.csproj.AssemblyReference.cache
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.GeneratedMSBuildEditorConfig.editorconfig
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.AssemblyInfoInputs.cache
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.AssemblyInfo.cs
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.csproj.CoreCompileInputs.cache
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.csproj.CopyComplete
-Z:\Projects\CSharp\YayosBank\rimstocks\obj\Debug\rimstocks.dll

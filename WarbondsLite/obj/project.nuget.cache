@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "9oh4XcgXmDGSppcRzQ4G597wRl8ie9WKkqCd27LYKcaqkSj2/O3MwYp5YP0RQd5IZMeMF105NCHSg+Q10+QVAg==",
+  "success": true,
+  "projectFilePath": "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\WarbondsLite.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Official Husko\\.nuget\\packages\\krafs.rimworld.ref\\1.4.3901\\krafs.rimworld.ref.1.4.3901.nupkg.sha512",
+    "C:\\Users\\Official Husko\\.nuget\\packages\\lib.harmony\\2.2.2\\lib.harmony.2.2.2.nupkg.sha512",
+    "C:\\Users\\Official Husko\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\Official Husko\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net48\\1.0.3\\microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512",
+    "C:\\Users\\Official Husko\\.nuget\\packages\\unlimitedhugs.rimworld.hugslib\\10.0.1\\unlimitedhugs.rimworld.hugslib.10.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

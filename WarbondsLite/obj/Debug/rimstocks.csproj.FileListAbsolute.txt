@@ -1,0 +1,8 @@
+Z:\Projects\CSharp\1.4\Assemblies\WarbondsLite.dll
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.csproj.AssemblyReference.cache
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.GeneratedMSBuildEditorConfig.editorconfig
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.AssemblyInfoInputs.cache
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.AssemblyInfo.cs
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.csproj.CoreCompileInputs.cache
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.csproj.CopyComplete
+Z:\Projects\CSharp\WarbondsLite\WarbondsLite\obj\Debug\WarbondsLite.dll

@@ -1,0 +1,68 @@
+{
+  "format": 1,
+  "restore": {
+    "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\WarbondsLite.csproj": {}
+  },
+  "projects": {
+    "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\WarbondsLite.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\WarbondsLite.csproj",
+        "projectName": "WarbondsLite",
+        "projectPath": "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\WarbondsLite.csproj",
+        "packagesPath": "C:\\Users\\Official Husko\\.nuget\\packages\\",
+        "outputPath": "Z:\\Projects\\CSharp\\WarbondsLite\\WarbondsLite\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Official Husko\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Krafs.Rimworld.Ref": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[*, )"
+            },
+            "Lib.Harmony": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[*, )"
+            },
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            },
+            "UnlimitedHugs.Rimworld.HugsLib": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[*, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
