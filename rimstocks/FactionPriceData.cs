@@ -15,9 +15,7 @@ public class FactionPriceData : IExposable
     public Dictionary<int, float> timeToPriceData = new Dictionary<int, float>();
 
     public Dictionary<int, float> timeToTrendData = new Dictionary<int, float>();
-
-    //public float loan = 0f;
-    //public int loan_day = 0;
+    
     public void ExposeData()
     {
         Scribe_Values.Look(ref graphEnabled, "graphEnabled", true);
@@ -26,8 +24,6 @@ public class FactionPriceData : IExposable
         Scribe_Values.Look(ref color, "color");
         Scribe_Collections.Look(ref timeToPriceData, "timeToPriceData", LookMode.Value, LookMode.Value);
         Scribe_Collections.Look(ref timeToTrendData, "timeToTrendData", LookMode.Value, LookMode.Value);
-        //Scribe_Values.Look<float>(ref loan, "loan");
-        //Scribe_Values.Look<int>(ref loan_day, "loan_day");
     }
 
     public void savePrice(float tick, float price)

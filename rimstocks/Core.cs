@@ -80,7 +80,6 @@ public class Core : MapComponent
         }
         // 틱 - 매일
 
-        //if (testDay < AbsTickGame / GenDate.TicksPerDay) // 테스트
         if (AbsTickGame % GenDate.TicksPerDay == 0)
         {
             if (modBase.use_rimwar)
@@ -158,12 +157,6 @@ public class Core : MapComponent
                     var shake = 1f + Rand.Range(-0.05f, 0.05f);
 
                     // 상한 하한에서 튕겨 내려오기
-                    /*
-                        if ((prevTrend >= maxPrice && Rand.Chance(0.2f)) || (prevTrend <= minPrice && Rand.Chance(0.2f)))
-                        {
-                            slope += 1f / slope;
-                        }
-                        */
                     if (prevTrend <= minPrice && Rand.Chance(0.2f))
                     {
                         slope += 1f / slope;
@@ -376,7 +369,6 @@ public class Core : MapComponent
 
         // 틱 - 분기
 
-        //if (Find.TickManager.TicksAbs % 500 == 0) // 테스트
         if (Find.TickManager.TicksAbs % GenDate.TicksPerQuadrum != GenDate.TicksPerHour)
         {
             return;

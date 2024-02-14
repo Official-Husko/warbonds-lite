@@ -181,9 +181,7 @@ public static class util
         var ar_thing = new List<Thing>();
         Thing t;
 
-        //ar_def.Shuffle();
         ar_def.SortByDescending(e => e.BaseMarketValue);
-        //ar_tmp0.SortBy<DrugPolicyEntry, float>((Func<DrugPolicyEntry, float>)(e => (float)e.drug.techLevel + (e.drug.defName.Contains("fire") ? 0.1f : e.drug.defName.Contains("emp") ? 0.2f : 0f)));
         for (var i = 0; i < ar_def.Count && marketValue > 0; i++)
         {
             var needCount = Mathf.FloorToInt(marketValue / ar_def[i].BaseMarketValue);
@@ -327,15 +325,6 @@ public static class util
             select t).Sum(t => t.stackCount);
     }
 
-
-    private static int AmountSendableSilver(Map map)
-    {
-        return (from t in TradeUtility.AllLaunchableThingsForTrade(map)
-            where t.def == ThingDefOf.Silver
-            select t).Sum(t => t.stackCount);
-    }
-
-
     private static int AmountSendableWarbond(Map map, ThingDef td)
     {
         return (from t in TradeUtility.AllLaunchableThingsForTrade(map)
@@ -356,15 +345,7 @@ public static class util
             diaOption.Disable("warbond.noCost".Translate());
             return diaOption;
         }
-
-        /*
-        if (faction.PlayerRelationKind == FactionRelationKind.Hostile)
-        {
-            DiaOption diaOption = new DiaOption(text);
-            diaOption.Disable("warbond.mustBeNotHostile".Translate());
-            return diaOption;
-        }
-        */
+        
         if (!faction.def.allowedArrivalTemperatureRange.ExpandedBy(-4f).Includes(map.mapTemperature.SeasonalTemp))
         {
             var diaOption2 = new DiaOption(text);
@@ -446,24 +427,6 @@ public static class util
 
         faction.lastMilitaryAidRequestTick = Find.TickManager.TicksGame;
         IncidentDefOf.RaidFriendly.Worker.TryExecute(incidentParms);
-    }
-
-    public static void RaidForLoan(Map map, Faction faction, float multiply)
-    {
-        var incidentParms = new IncidentParms
-        {
-            target = map,
-            faction = faction,
-            raidArrivalModeForQuickMilitaryAid = true
-        };
-        incidentParms.points = StorytellerUtility.DefaultThreatPointsNow(incidentParms.target) * multiply;
-        if (incidentParms.points > 10000)
-        {
-            incidentParms.points = 10000;
-        }
-
-        incidentParms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
-        IncidentDefOf.RaidEnemy.Worker.TryExecute(incidentParms);
     }
     
     public static string factionDefNameToKey(string defname)
