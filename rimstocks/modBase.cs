@@ -42,7 +42,7 @@ public class modBase : ModBase
     private SettingHandle<bool> rimwarLink_s;
 
     private SettingHandle<float> rimwarPriceFactor_s;
-    
+
     private SettingHandle<float> sellPrice_s;
 
     private SettingHandle<bool> useEnemyFaction_s;
@@ -52,9 +52,7 @@ public class modBase : ModBase
     static modBase()
     {
         if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.PackageId.ToLower().Contains("Torann.RimWar".ToLower())))
-        {
             exist_rimWar = true;
-        }
     }
 
     public override string ModIdentifier => "yayo.rimstocks";

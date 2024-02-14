@@ -10,7 +10,7 @@ namespace rimstocks;
 
 public static class util
 {
-    private static List<Thing> rewards = new List<Thing>();
+    private static List<Thing> rewards = new();
 
 
     // 특정 채권 모두제거 (상장폐지용)
@@ -59,7 +59,6 @@ public static class util
             rewards.Clear();
             var ar_thingDef = new List<ThingDef>();
             if (!f.modContentPack?.IsOfficialMod == true)
-            {
                 // 모드 팩션
                 foreach (var t in from t in DefDatabase<ThingDef>.AllDefs
                          where
@@ -67,10 +66,7 @@ public static class util
                              && t.modContentPack is { PackageId: not null }
                              && t.modContentPack.PackageId == f.modContentPack.PackageId
                          select t)
-                {
                     ar_thingDef.Add(t);
-                }
-            }
 
             if (ar_thingDef.Count == 0)
             {
@@ -84,9 +80,7 @@ public static class util
                                      && t.techLevel == TechLevel.Spacer
                                      && t.modContentPack is { IsOfficialMod: true }
                                  select t)
-                        {
                             ar_thingDef.Add(t);
-                        }
 
                         break;
                     }
@@ -98,9 +92,7 @@ public static class util
                                      && t.techLevel == TechLevel.Industrial
                                      && t.modContentPack is { IsOfficialMod: true }
                                  select t)
-                        {
                             ar_thingDef.Add(t);
-                        }
 
                         break;
                     }
@@ -111,9 +103,7 @@ public static class util
                                      basicThingCheck(t) && t.techLevel == TechLevel.Medieval &&
                                      t.modContentPack is { IsOfficialMod: true }
                                  select t)
-                        {
                             ar_thingDef.Add(t);
-                        }
 
                         break;
                     }
@@ -124,41 +114,29 @@ public static class util
                                      basicThingCheck(t) && t.techLevel == TechLevel.Neolithic &&
                                      t.modContentPack is { IsOfficialMod: true }
                                  select t)
-                        {
                             ar_thingDef.Add(t);
-                        }
 
                         break;
                     }
                 }
 
                 if (ar_thingDef.Count == 0)
-                {
                     foreach (var t in from t in DefDatabase<ThingDef>.AllDefs
                              where
                                  basicThingCheck(t)
                                  && t.modContentPack is { IsOfficialMod: true }
                              select t)
-                    {
                         ar_thingDef.Add(t);
-                    }
-                }
             }
 
 
-            if (ar_thingDef.Count == 0)
-            {
-                continue;
-            }
+            if (ar_thingDef.Count == 0) continue;
 
             marketValue = Math.Min(marketValue, modBase.maxReward);
 
             rewards = MakeThings(marketValue, ar_thingDef, f);
 
-            if (rewards.Count == 0)
-            {
-                continue;
-            }
+            if (rewards.Count == 0) continue;
 
             DropPodUtility.DropThingsNear(intVec, m, rewards, 110, false, false, false, false);
 
@@ -187,13 +165,9 @@ public static class util
             var needCount = Mathf.FloorToInt(marketValue / ar_def[i].BaseMarketValue);
             var count = Mathf.Min(ar_def[i].stackLimit, needCount);
             if (ar_def[i].MadeFromStuff)
-            {
                 while (needCount > 0)
                 {
-                    if (!GenStuff.TryRandomStuffFor(ar_def[i], out var stuff, f.techLevel))
-                    {
-                        continue;
-                    }
+                    if (!GenStuff.TryRandomStuffFor(ar_def[i], out var stuff, f.techLevel)) continue;
 
                     t = ThingMaker.MakeThing(ar_def[i], stuff);
 
@@ -203,9 +177,7 @@ public static class util
 
                     needCount -= count;
                 }
-            }
             else
-            {
                 while (needCount > 0)
                 {
                     t = ThingMaker.MakeThing(ar_def[i]);
@@ -216,7 +188,6 @@ public static class util
 
                     needCount -= count;
                 }
-            }
         }
 
         if (marketValue >= 1f)
@@ -227,16 +198,9 @@ public static class util
         }
 
         foreach (var t2 in ar_thing)
-        {
             if (t2 == null)
-            {
                 ar_thing.Remove(null);
-            }
-            else if (t2.stackCount == 0)
-            {
-                ar_thing.Remove(t2);
-            }
-        }
+            else if (t2.stackCount == 0) ar_thing.Remove(t2);
 
         return ar_thing;
     }
@@ -248,24 +212,17 @@ public static class util
                  where
                      t.def == td
                  select t)
-        {
             ar_thing.Add(t);
-        }
 
         foreach (var p in cv.pawns)
         {
-            if (p.inventory?.innerContainer == null)
-            {
-                continue;
-            }
+            if (p.inventory?.innerContainer == null) continue;
 
             foreach (var t2 in from t2 in p.inventory.innerContainer
                      where
                          t2.def == td
                      select t2)
-            {
                 ar_thing.Add(t2);
-            }
         }
 
         return ar_thing;
@@ -278,9 +235,7 @@ public static class util
                  where
                      t.def == td
                  select t)
-        {
             ar_thing.Add(t);
-        }
 
         foreach (var t in from t in map.listerThings.AllThings
                  where
@@ -293,25 +248,18 @@ public static class util
                      where
                          t2.def == td
                      select t2)
-            {
                 ar_thing.Add(t2);
-            }
         }
 
         foreach (var p in map.mapPawns.FreeColonistsAndPrisoners)
         {
-            if (p.inventory?.innerContainer == null)
-            {
-                continue;
-            }
+            if (p.inventory?.innerContainer == null) continue;
 
             foreach (var t2 in from t2 in p.inventory.innerContainer
                      where
                          t2.def == td
                      select t2)
-            {
                 ar_thing.Add(t2);
-            }
         }
 
         return ar_thing;
@@ -345,7 +293,7 @@ public static class util
             diaOption.Disable("warbond.noCost".Translate());
             return diaOption;
         }
-        
+
         if (!faction.def.allowedArrivalTemperatureRange.ExpandedBy(-4f).Includes(map.mapTemperature.SeasonalTemp))
         {
             var diaOption2 = new DiaOption(text);
@@ -421,14 +369,12 @@ public static class util
         };
 
         if (faction.PlayerRelationKind == FactionRelationKind.Hostile)
-        {
             incidentParms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn;
-        }
 
         faction.lastMilitaryAidRequestTick = Find.TickManager.TicksGame;
         IncidentDefOf.RaidFriendly.Worker.TryExecute(incidentParms);
     }
-    
+
     public static string factionDefNameToKey(string defname)
     {
         return $"warbondPrice_{defname}";

@@ -10,7 +10,7 @@ namespace rimstocks;
 public class WorldComponent_PriceSaveLoad : WorldComponent
 {
     public static WorldComponent_PriceSaveLoad staticInstance;
-    public Dictionary<string, FactionPriceData> factionToPriceData = new Dictionary<string, FactionPriceData>();
+    public Dictionary<string, FactionPriceData> factionToPriceData = new();
     public bool initialized;
 
     public WorldComponent_PriceSaveLoad(World world) : base(world)
@@ -41,10 +41,7 @@ public class WorldComponent_PriceSaveLoad : WorldComponent
     public FactionPriceData getFactionPriceDataFrom(FactionDef f)
     {
         var Key = util.factionDefNameToKey(f.defName);
-        if (factionToPriceData.TryGetValue(Key, out var from))
-        {
-            return from;
-        }
+        if (factionToPriceData.TryGetValue(Key, out var from)) return from;
 
         var fpdn = new FactionPriceData
         {
@@ -72,30 +69,19 @@ public class WorldComponent_PriceSaveLoad : WorldComponent
                      where
                          Core.isWarbondFaction(f)
                      select f)
-            {
                 if (modBase.use_rimwar)
-                {
                     savePrice(f, ticksNow, Core.getRimwarPriceByDef(f));
-                }
                 else if (f != null)
-                {
                     savePrice(f, ticksNow, Core.getDefaultPrice(f));
-                }
                 else
-                {
                     savePrice(null, ticksNow, Rand.Range(200f, 6000f));
-                }
-            }
         }
         else
         {
             foreach (var f in Core.ar_faction)
             {
                 var key = util.factionDefNameToKey(f.defName);
-                if (!staticInstance.factionToPriceData.Keys.Contains(key))
-                {
-                    continue;
-                }
+                if (!staticInstance.factionToPriceData.Keys.Contains(key)) continue;
 
                 var rs = staticInstance.func_289013(key);
                 rs.defname = util.keyToFactionDefName(key);
