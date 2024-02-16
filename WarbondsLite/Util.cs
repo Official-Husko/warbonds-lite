@@ -61,87 +61,59 @@ namespace WarbondsLite
         /// <param name="warbondDef">The definition of the warbond thing.</param>
         public static void GiveDividend(FactionDef f, ThingDef warbondDef)
         {
-            // Get all player maps
-            var playerMaps = Find.Maps.Where(m => m.ParentFaction == Find.FactionManager.OfPlayer).ToList();
+            var rewards = new List<Thing>();
 
-            foreach (var map in playerMaps)
+            foreach (var map in Find.Maps.Where(m => m.ParentFaction == Find.FactionManager.OfPlayer))
             {
-                // Calculate the total warbond count for dividends
                 var bondCount = AmountWarbondForDividend(map, warbondDef);
-                // Calculate the total market value based on warbond count and dividend percentage
                 var marketValue = bondCount * warbondDef.BaseMarketValue * ModBase.DividendPer;
-
-                // Find a suitable drop spot for rewards
                 var intVec = DropCellFinder.TradeDropSpot(map);
 
-                // Create a list to store reward items
-                rewards.Clear();
-                var arThingDef = new List<ThingDef>();
+                var arThingDef = GetRewardThingDefs(f);
 
-                // Check if the faction is from a mod
-                if (!(f.modContentPack?.IsOfficialMod == true))
-                {
-                    // Include things from the mod faction
-                    arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                        .Where(t => BasicThingCheck(t) && t.modContentPack?.PackageId == f.modContentPack.PackageId));
-                }
-
-                // If no mod-specific things are found, include default things based on faction tech level
-                if (arThingDef.Count == 0)
-                {
-                    switch (f.techLevel)
-                    {
-                        case >= TechLevel.Spacer:
-                            arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                                .Where(t => BasicThingCheck(t) && t.techLevel == TechLevel.Spacer && t.modContentPack?.IsOfficialMod == true));
-                            break;
-
-                        case >= TechLevel.Industrial:
-                            arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                                .Where(t => BasicThingCheck(t) && t.techLevel == TechLevel.Industrial && t.modContentPack?.IsOfficialMod == true));
-                            break;
-
-                        case >= TechLevel.Medieval:
-                            arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                                .Where(t => BasicThingCheck(t) && t.techLevel == TechLevel.Medieval && t.modContentPack?.IsOfficialMod == true));
-                            break;
-
-                        default:
-                            arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                                .Where(t => BasicThingCheck(t) && t.techLevel == TechLevel.Neolithic && t.modContentPack?.IsOfficialMod == true));
-                            break;
-                    }
-
-                    // If still no things are found, include default mod-specific things
-                    if (arThingDef.Count == 0)
-                    {
-                        arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
-                            .Where(t => BasicThingCheck(t) && t.modContentPack?.IsOfficialMod == true));
-                    }
-                }
-
-                // If no valid things are found, move to the next map
                 if (arThingDef.Count == 0) continue;
 
-                // Ensure the market value does not exceed the maximum reward limit
                 marketValue = Math.Min(marketValue, ModBase.MaxReward);
-
-                // Create a list of reward items based on the market value and thing definitions
                 rewards = MakeThings(marketValue, arThingDef, f);
 
-                // If no rewards are generated, move to the next map
                 if (rewards.Count == 0) continue;
 
-                // Drop the rewards near the calculated drop spot on the map
                 DropPodUtility.DropThingsNear(intVec, map, rewards, 110, false, false, false, false);
-
-                // Clear the rewards list for the next iteration
                 rewards.Clear();
 
-                // Display a message indicating that dividends have arrived
-                Messages.Message(new Message("bond.dividendArrived".Translate(warbondDef.label, bondCount, marketValue),
-                    MessageTypeDefOf.NeutralEvent));
+                var translatedMessage = "bond.dividendArrived".Translate(warbondDef.label, bondCount, marketValue);
+                Messages.Message(new Message(translatedMessage, MessageTypeDefOf.NeutralEvent));
             }
+        }
+
+        private static List<ThingDef> GetRewardThingDefs(FactionDef f)
+        {
+            var arThingDef = new List<ThingDef>();
+
+            if (!(f.modContentPack?.IsOfficialMod == true))
+            {
+                arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
+                    .Where(t => BasicThingCheck(t) && t.modContentPack?.PackageId == f.modContentPack.PackageId));
+            }
+
+            if (arThingDef.Count == 0)
+            {
+                arThingDef.AddRange(GetThingDefsByTechLevel(f.techLevel));
+            }
+
+            if (arThingDef.Count == 0)
+            {
+                arThingDef.AddRange(DefDatabase<ThingDef>.AllDefs
+                    .Where(t => BasicThingCheck(t) && t.modContentPack?.IsOfficialMod == true));
+            }
+
+            return arThingDef;
+        }
+
+        private static IEnumerable<ThingDef> GetThingDefsByTechLevel(TechLevel techLevel)
+        {
+            return DefDatabase<ThingDef>.AllDefs
+                .Where(t => BasicThingCheck(t) && t.techLevel == techLevel && t.modContentPack?.IsOfficialMod == true);
         }
 
         /// <summary>
