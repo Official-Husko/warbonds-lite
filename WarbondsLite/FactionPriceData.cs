@@ -26,7 +26,7 @@ public class FactionPriceData : IExposable
         Scribe_Collections.Look(ref timeToTrendData, "timeToTrendData", LookMode.Value, LookMode.Value);
     }
 
-    public void savePrice(float tick, float price)
+    public void SavePrice(float tick, float price)
     {
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToPriceData.ContainsKey(unitTime)) timeToPriceData.Remove(unitTime);
@@ -34,7 +34,7 @@ public class FactionPriceData : IExposable
         timeToPriceData.Add(unitTime, price);
     }
 
-    public float loadPrice(float tick)
+    public float LoadPrice(float tick)
     {
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToPriceData.TryGetValue(unitTime, out var price)) return price;
@@ -47,7 +47,7 @@ public class FactionPriceData : IExposable
             : Rand.Range(200f, 6000f);
     }
 
-    public void saveTrend(float tick, float trend)
+    public void SaveTrend(float tick, float trend)
     {
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToTrendData.ContainsKey(unitTime)) timeToTrendData.Remove(unitTime);
@@ -55,7 +55,7 @@ public class FactionPriceData : IExposable
         timeToTrendData.Add(unitTime, trend);
     }
 
-    public float loadTrend(float tick)
+    public float LoadTrend(float tick)
     {
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToTrendData.TryGetValue(unitTime, out var trend)) return trend;

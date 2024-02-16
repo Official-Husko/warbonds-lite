@@ -13,7 +13,7 @@ public static class util
     private static List<Thing> rewards = new();
 
 
-    // 특정 채권 모두제거 (상장폐지용)
+    // Remove all specific bonds (for delisting)
     public static bool removeAllThingByDef(ThingDef def)
     {
         var removed = false;
@@ -42,12 +42,12 @@ public static class util
     }
 
 
-    // 배당금 지급
+    // pay dividends
     public static void giveDividend(FactionDef f, ThingDef warbondDef)
     {
         foreach (var m in from m in Find.Maps where m.ParentFaction == Find.FactionManager.OfPlayer select m)
         {
-            // 보상 가격 규모 설정
+            // Set reward price scale
             var bondCount = AmountWarbondForDividend(m, warbondDef);
             var marketValue = bondCount * warbondDef.BaseMarketValue * modBase.dividendPer;
 
@@ -55,11 +55,11 @@ public static class util
             var intVec = DropCellFinder.TradeDropSpot(m);
 
 
-            // 보상 물품 DEF 리스트 생성
+            // Create reward item DEF list
             rewards.Clear();
             var ar_thingDef = new List<ThingDef>();
             if (!f.modContentPack?.IsOfficialMod == true)
-                // 모드 팩션
+                // mod faction
                 foreach (var t in from t in DefDatabase<ThingDef>.AllDefs
                          where
                              basicThingCheck(t)
@@ -147,7 +147,7 @@ public static class util
                 MessageTypeDefOf.NeutralEvent));
         }
 
-        // 배당금 물품 DEF 기본 체크
+        // Dividend item DEF basic check
         bool basicThingCheck(ThingDef t)
         {
             return t.tradeability != Tradeability.None && t.race == null && !t.IsBuildingArtificial;
@@ -280,10 +280,10 @@ public static class util
             select t).Sum(t => t.stackCount);
     }
 
-    // 통신기 메뉴 - 군사요청
+    // Communicator Menu - Military Request
     public static DiaOption RequestMilitaryAidOptionWarbond(Map map, Faction faction, Pawn negotiator)
     {
-        var warbondDef = ThingDef.Named($"yy_warbond_{faction.def.defName}");
+        var warbondDef = ThingDef.Named($"oh_warbond_{faction.def.defName}");
 
         string text = "warbond.requestMilitaryAid".Translate(modBase.militaryAid_cost, warbondDef.label);
 

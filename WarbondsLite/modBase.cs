@@ -138,7 +138,7 @@ public class modBase : ModBase
         for (var i = 0; i < Core.ar_warbondDef.Count; i++)
         {
             var f = Core.ar_faction[i];
-            var lastPrice = WorldComponent_PriceSaveLoad.loadPrice(f, Core.AbsTickGame);
+            var lastPrice = WorldComponentPriceSaveLoad.LoadPrice(f, Core.AbsTickGame);
             Core.ar_warbondDef[i].SetStatBaseValue(StatDefOf.MarketValue, lastPrice);
         }
     }

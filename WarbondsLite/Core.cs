@@ -94,8 +94,8 @@ public class Core : MapComponent
                         foreach (var fd in ar_faction)
                         {
                             var price = getRimwarPriceByDef(fd);
-                            WorldComponent_PriceSaveLoad.saveTrend(fd, AbsTickGame, price);
-                            WorldComponent_PriceSaveLoad.savePrice(fd, AbsTickGame, price);
+                            WorldComponentPriceSaveLoad.SaveTrend(fd, AbsTickGame, price);
+                            WorldComponentPriceSaveLoad.SavePrice(fd, AbsTickGame, price);
                             ar_warbondDef[ar_faction.IndexOf(fd)].SetStatBaseValue(StatDefOf.MarketValue, price);
                         }
                     }))();
@@ -116,8 +116,8 @@ public class Core : MapComponent
                 {
                     var f = ar_faction[i];
                     var style = ar_graphStyle[i];
-                    var prevTrend = WorldComponent_PriceSaveLoad.loadTrend(f, AbsTickGame - tickGap);
-                    var prevTrend2 = WorldComponent_PriceSaveLoad.loadTrend(f, AbsTickGame - tickGap * 2);
+                    var prevTrend = WorldComponentPriceSaveLoad.LoadTrend(f, AbsTickGame - tickGap);
+                    var prevTrend2 = WorldComponentPriceSaveLoad.LoadTrend(f, AbsTickGame - tickGap * 2);
 
                     // 추세 각도
                     float slope;
@@ -270,17 +270,17 @@ public class Core : MapComponent
                     var newTrend = Mathf.Clamp(prevTrend * slope, minPrice, maxPrice);
                     var newPrice = Mathf.Clamp(newTrend * shake, minPrice, maxPrice);
                     ar_warbondDef[i].SetStatBaseValue(StatDefOf.MarketValue, newPrice);
-                    WorldComponent_PriceSaveLoad.saveTrend(f, AbsTickGame, newTrend);
-                    WorldComponent_PriceSaveLoad.savePrice(f, AbsTickGame, newPrice);
+                    WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, newTrend);
+                    WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, newPrice);
 
 
                     // 상장폐지
                     if (!(newPrice < modBase.DelistingPrice)) continue;
 
-                    WorldComponent_PriceSaveLoad.saveTrend(f, AbsTickGame - GenDate.TicksPerDay,
+                    WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame - GenDate.TicksPerDay,
                         getDefaultPrice(f));
-                    WorldComponent_PriceSaveLoad.saveTrend(f, AbsTickGame, getDefaultPrice(f));
-                    WorldComponent_PriceSaveLoad.savePrice(f, AbsTickGame, getDefaultPrice(f));
+                    WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, getDefaultPrice(f));
+                    WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, getDefaultPrice(f));
 
                     if (util.removeAllThingByDef(ar_warbondDef[i]))
                         Messages.Message(new Message(
@@ -367,8 +367,8 @@ public class Core : MapComponent
                             }
 
                             price *= modBase.rimwarPriceFactor;
-                            WorldComponent_PriceSaveLoad.saveTrend(f, AbsTickGame, price);
-                            WorldComponent_PriceSaveLoad.savePrice(f, AbsTickGame, price);
+                            WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, price);
+                            WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, price);
                             ar_warbondDef[ar_faction.IndexOf(f)].SetStatBaseValue(StatDefOf.MarketValue, price);
                         }
                     }
@@ -415,8 +415,8 @@ public class Core : MapComponent
                     }
 
                     price *= modBase.rimwarPriceFactor;
-                    WorldComponent_PriceSaveLoad.saveTrend(f2, AbsTickGame, price);
-                    WorldComponent_PriceSaveLoad.savePrice(f2, AbsTickGame, price);
+                    WorldComponentPriceSaveLoad.SaveTrend(f2, AbsTickGame, price);
+                    WorldComponentPriceSaveLoad.SavePrice(f2, AbsTickGame, price);
                     ar_warbondDef[ar_faction.IndexOf(f2)].SetStatBaseValue(StatDefOf.MarketValue, price);
                 }))();
             }
@@ -434,7 +434,7 @@ public class Core : MapComponent
             index = ar_faction.IndexOf(f);
             if (index >= 0)
             {
-                prev = WorldComponent_PriceSaveLoad.loadTrend(f, targetTime);
+                prev = WorldComponentPriceSaveLoad.LoadTrend(f, targetTime);
                 resetChangeScale();
                 changeScale *= Mathf.Min(1f, 1500f / prev);
                 if (success)
@@ -452,9 +452,9 @@ public class Core : MapComponent
                             "-" + (changeScale * 100f).ToString("0.#")), MessageTypeDefOf.ThreatSmall));
                 }
 
-                WorldComponent_PriceSaveLoad.saveTrend(f, targetTime, change * prev);
-                prev = WorldComponent_PriceSaveLoad.loadPrice(f, targetTime);
-                WorldComponent_PriceSaveLoad.savePrice(f, targetTime, change * prev);
+                WorldComponentPriceSaveLoad.SaveTrend(f, targetTime, change * prev);
+                prev = WorldComponentPriceSaveLoad.LoadPrice(f, targetTime);
+                WorldComponentPriceSaveLoad.SavePrice(f, targetTime, change * prev);
                 ar_warbondDef[index].SetStatBaseValue(StatDefOf.MarketValue, change * prev);
             }
         }
@@ -465,7 +465,7 @@ public class Core : MapComponent
         index = ar_faction.IndexOf(f2);
         if (index < 0) return;
 
-        prev = WorldComponent_PriceSaveLoad.loadTrend(f2, targetTime);
+        prev = WorldComponentPriceSaveLoad.LoadTrend(f2, targetTime);
         resetChangeScale();
         changeScale *= Mathf.Min(1f, 1500f / prev);
         if (!success)
@@ -483,9 +483,9 @@ public class Core : MapComponent
                     "-" + (changeScale * 100f).ToString("0.#")), MessageTypeDefOf.ThreatSmall));
         }
 
-        WorldComponent_PriceSaveLoad.saveTrend(f2, targetTime, change * prev);
-        prev = WorldComponent_PriceSaveLoad.loadPrice(f2, targetTime);
-        WorldComponent_PriceSaveLoad.savePrice(f2, targetTime, change * prev);
+        WorldComponentPriceSaveLoad.SaveTrend(f2, targetTime, change * prev);
+        prev = WorldComponentPriceSaveLoad.LoadPrice(f2, targetTime);
+        WorldComponentPriceSaveLoad.SavePrice(f2, targetTime, change * prev);
         ar_warbondDef[index].SetStatBaseValue(StatDefOf.MarketValue, change * prev);
     }
 
@@ -512,7 +512,7 @@ public class Core : MapComponent
                 rotatable = false,
                 pathCost = 14,
                 // detail
-                defName = $"yy_warbond_{f.defName}",
+                defName = $"oh_warbond_{f.defName}",
                 label = string.Format("warbond_t".Translate(), f.label),
                 description = string.Format("warbond_d".Translate(), f.label),
                 graphicData = new GraphicData
