@@ -8,56 +8,45 @@ using Verse;
 namespace WarbondsLite;
 
 [EarlyInit]
-public class modBase : ModBase
+public class ModBase : HugsLib.ModBase
 {
-    public static bool useEnemyFaction;
-    public static bool useVanillaEnemyFaction;
-    public static bool rimwarLink;
-    public static float rimwarPriceFactor;
-    public static float sellPrice;
-    public static float dividendPer;
-    public static float maxReward;
+    public static bool UseEnemyFaction;
+    public static bool UseVanillaEnemyFaction;
+    public static bool RimwarLink;
+    public static float RimwarPriceFactor;
+    public static float SellPrice;
+    public static float DividendPer;
+    public static float MaxReward;
     public static float DelistingPrice;
-    public static int limitDate;
-    public static int militaryAid_cost;
-    public static float militaryAid_multiply;
-    public static float priceEvent_multiply;
+    public static int LimitDate;
+    public static int MilitaryAidCost;
+    public static float MilitaryAidMultiply;
+    public static float PriceEventMultiply;
 
-    public static readonly bool exist_rimWar;
+    public static readonly bool ExistRimWar;
 
-    private SettingHandle<float> DelistingPrice_s;
+    private SettingHandle<float> _delistingPriceSetting;
+    private SettingHandle<float> _dividendPerSetting;
+    private SettingHandle<int> _limitDateSetting;
+    private SettingHandle<float> _maxRewardSetting;
+    private SettingHandle<int> _militaryAidCostSetting;
+    private SettingHandle<float> _militaryAidMultiplySetting;
+    private SettingHandle<float> _priceEventMultiplySetting;
+    private SettingHandle<bool> _rimwarLinkSetting;
+    private SettingHandle<float> _rimwarPriceFactorSetting;
+    private SettingHandle<float> _sellPriceSetting;
+    private SettingHandle<bool> _useEnemyFactionSetting;
+    private SettingHandle<bool> _useVanillaEnemyFactionSetting;
 
-    private SettingHandle<float> dividendPer_s;
-
-    private SettingHandle<int> limitDate_s;
-
-    private SettingHandle<float> maxReward_s;
-
-    private SettingHandle<int> militaryAid_cost_s;
-
-    private SettingHandle<float> militaryAid_multiply_s;
-
-    private SettingHandle<float> priceEvent_multiply_s;
-
-    private SettingHandle<bool> rimwarLink_s;
-
-    private SettingHandle<float> rimwarPriceFactor_s;
-
-    private SettingHandle<float> sellPrice_s;
-
-    private SettingHandle<bool> useEnemyFaction_s;
-
-    private SettingHandle<bool> useVanillaEnemyFaction_s;
-
-    static modBase()
+    static ModBase()
     {
         if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.PackageId.ToLower().Contains("Torann.RimWar".ToLower())))
-            exist_rimWar = true;
+            ExistRimWar = true;
     }
 
     public override string ModIdentifier => "husko.WarbondsLite";
     protected override bool HarmonyAutoPatch => false;
-    public static bool use_rimwar => exist_rimWar && rimwarLink;
+    public static bool use_rimwar => ExistRimWar && RimwarLink;
 
     public override void EarlyInitialize()
     {
@@ -71,39 +60,39 @@ public class modBase : ModBase
 
     public void setupOption()
     {
-        useEnemyFaction_s = Settings.GetHandle<bool>("useEnemyFaction", "Mods Enemy Faction (Restart)",
+        _useEnemyFactionSetting = Settings.GetHandle<bool>("UseEnemyFaction", "Mods Enemy Faction (Restart)",
             "(Need Restart Game)\nMods Enemy faction use warbond");
-        useEnemyFaction = useEnemyFaction_s.Value;
+        UseEnemyFaction = _useEnemyFactionSetting.Value;
 
-        useVanillaEnemyFaction_s = Settings.GetHandle<bool>("useVanillaEnemyFaction", "Vanilla Enemy Faction (Restart)",
+        _useVanillaEnemyFactionSetting = Settings.GetHandle<bool>("UseVanillaEnemyFaction", "Vanilla Enemy Faction (Restart)",
             "(Need Restart Game)\nVanillia Enemy faction use warbond");
-        useVanillaEnemyFaction = useVanillaEnemyFaction_s.Value;
+        UseVanillaEnemyFaction = _useVanillaEnemyFactionSetting.Value;
 
-        limitDate_s = Settings.GetHandle<int>("limitDate", "Bond limit date (Restart)",
+        _limitDateSetting = Settings.GetHandle<int>("LimitDate", "Bond limit date (Restart)",
             "(Need Restart Game)\nBond limit date");
-        limitDate = limitDate_s.Value;
+        LimitDate = _limitDateSetting.Value;
     }
 
     public void setupOption2()
     {
-        rimwarLink_s = Settings.GetHandle("rimwarLink", "rimwarLink.t".Translate(), "rimwarLink.d".Translate(), true);
-        rimwarPriceFactor_s = Settings.GetHandle("rimwarPriceFactor", "rimwarPriceFactor.t".Translate(),
-            "rimwarPriceFactor.d".Translate(), 0.33f);
+        _rimwarLinkSetting = Settings.GetHandle("RimwarLink", "RimwarLink.t".Translate(), "RimwarLink.d".Translate(), true);
+        _rimwarPriceFactorSetting = Settings.GetHandle("RimwarPriceFactor", "RimwarPriceFactor.t".Translate(),
+            "RimwarPriceFactor.d".Translate(), 0.33f);
 
-        sellPrice_s = Settings.GetHandle("sellPrice", "sellPrice.t".Translate(), "sellPrice.d".Translate(), 0.92f);
-        dividendPer_s =
-            Settings.GetHandle("dividendPer", "dividendPer.t".Translate(), "dividendPer.d".Translate(), 0.08f);
-        maxReward_s =
-            Settings.GetHandle("maxReward", "maxReward.t".Translate(), "maxReward.d".Translate(), 20000f);
-        DelistingPrice_s = Settings.GetHandle("DelistingPrice", "DelistingPrice.t".Translate(),
+        _sellPriceSetting = Settings.GetHandle("SellPrice", "SellPrice.t".Translate(), "SellPrice.d".Translate(), 0.92f);
+        _dividendPerSetting =
+            Settings.GetHandle("DividendPer", "DividendPer.t".Translate(), "DividendPer.d".Translate(), 0.08f);
+        _maxRewardSetting =
+            Settings.GetHandle("MaxReward", "MaxReward.t".Translate(), "MaxReward.d".Translate(), 20000f);
+        _delistingPriceSetting = Settings.GetHandle("DelistingPrice", "DelistingPrice.t".Translate(),
             "DelistingPrice.d".Translate(), 100f);
 
-        militaryAid_cost_s = Settings.GetHandle("militaryAid_cost", "militaryAid_cost.t".Translate(),
-            "militaryAid_cost.d".Translate(), 5);
-        militaryAid_multiply_s = Settings.GetHandle("militaryAid_multiply", "militaryAid_multiply.t".Translate(),
-            "militaryAid_multiply.d".Translate(), 1f);
-        priceEvent_multiply_s = Settings.GetHandle("priceEvent_multiply", "priceEvent_multiply.t".Translate(),
-            "priceEvent_multiply.d".Translate(), 1f);
+        _militaryAidCostSetting = Settings.GetHandle("MilitaryAidCost", "MilitaryAidCost.t".Translate(),
+            "MilitaryAidCost.d".Translate(), 5);
+        _militaryAidMultiplySetting = Settings.GetHandle("MilitaryAidMultiply", "MilitaryAidMultiply.t".Translate(),
+            "MilitaryAidMultiply.d".Translate(), 1f);
+        _priceEventMultiplySetting = Settings.GetHandle("PriceEventMultiply", "PriceEventMultiply.t".Translate(),
+            "PriceEventMultiply.d".Translate(), 1f);
 
         SettingsChanged();
 
@@ -112,20 +101,20 @@ public class modBase : ModBase
 
     public override void SettingsChanged()
     {
-        useEnemyFaction = useEnemyFaction_s.Value;
-        useVanillaEnemyFaction = useVanillaEnemyFaction_s.Value;
+        UseEnemyFaction = _useEnemyFactionSetting.Value;
+        UseVanillaEnemyFaction = _useVanillaEnemyFactionSetting.Value;
 
-        rimwarLink = rimwarLink_s.Value;
-        rimwarPriceFactor = rimwarPriceFactor_s.Value;
+        RimwarLink = _rimwarLinkSetting.Value;
+        RimwarPriceFactor = _rimwarPriceFactorSetting.Value;
 
-        sellPrice = Mathf.Clamp(sellPrice_s.Value, 0.01f, 1f);
-        dividendPer = Mathf.Clamp(dividendPer_s.Value, 0f, 5f);
-        maxReward = Mathf.Clamp(maxReward_s.Value, 0f, 500000f);
-        DelistingPrice = Mathf.Clamp(DelistingPrice_s.Value, 1f, 1000f);
-        limitDate = limitDate_s.Value;
-        militaryAid_cost = militaryAid_cost_s.Value;
-        militaryAid_multiply = militaryAid_multiply_s.Value;
-        priceEvent_multiply = priceEvent_multiply_s.Value;
+        SellPrice = Mathf.Clamp(_sellPriceSetting.Value, 0.01f, 1f);
+        DividendPer = Mathf.Clamp(_dividendPerSetting.Value, 0f, 5f);
+        MaxReward = Mathf.Clamp(_maxRewardSetting.Value, 0f, 500000f);
+        DelistingPrice = Mathf.Clamp(_delistingPriceSetting.Value, 1f, 1000f);
+        LimitDate = _limitDateSetting.Value;
+        MilitaryAidCost = _militaryAidCostSetting.Value;
+        MilitaryAidMultiply = _militaryAidMultiplySetting.Value;
+        PriceEventMultiply = _priceEventMultiplySetting.Value;
 
         Core.patchIncident();
     }

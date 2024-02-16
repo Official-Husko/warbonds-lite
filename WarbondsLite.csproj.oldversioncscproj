@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="util.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="patch_rimStock.cs" />
     <Compile Include="harmonyPatch_core.cs" />
     <Compile Include="Core.cs" />

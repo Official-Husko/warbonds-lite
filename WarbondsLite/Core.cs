@@ -46,11 +46,11 @@ public class Core : MapComponent
             !f.permanentEnemy)
             return true;
 
-        if (modBase.useEnemyFaction)
+        if (ModBase.UseEnemyFaction)
             if (!f.modContentPack.PackageId.Contains("ludeon"))
                 return true;
 
-        if (!modBase.useVanillaEnemyFaction) return f.defName == "Pirate";
+        if (!ModBase.UseVanillaEnemyFaction) return f.defName == "Pirate";
 
         if (f.modContentPack.PackageId.Contains("ludeon")) return true;
 
@@ -65,7 +65,7 @@ public class Core : MapComponent
 
         if (AbsTickGame % GenDate.TicksPerDay == 0)
         {
-            if (modBase.use_rimwar)
+            if (ModBase.use_rimwar)
             {
                 // 림워
                 try
@@ -275,20 +275,20 @@ public class Core : MapComponent
 
 
                     // 상장폐지
-                    if (!(newPrice < modBase.DelistingPrice)) continue;
+                    if (!(newPrice < ModBase.DelistingPrice)) continue;
 
                     WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame - GenDate.TicksPerDay,
                         getDefaultPrice(f));
                     WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, getDefaultPrice(f));
                     WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, getDefaultPrice(f));
 
-                    if (util.removeAllThingByDef(ar_warbondDef[i]))
+                    if (Util.RemoveAllThingByDef(ar_warbondDef[i]))
                         Messages.Message(new Message(
-                            "bond.delisting.destroy".Translate(ar_warbondDef[i].label, modBase.DelistingPrice),
+                            "bond.delisting.destroy".Translate(ar_warbondDef[i].label, ModBase.DelistingPrice),
                             MessageTypeDefOf.ThreatSmall));
                     else
                         Messages.Message(new Message(
-                            "bond.delisting".Translate(ar_warbondDef[i].label, modBase.DelistingPrice),
+                            "bond.delisting".Translate(ar_warbondDef[i].label, ModBase.DelistingPrice),
                             MessageTypeDefOf.ThreatSmall));
                 }
             }
@@ -300,7 +300,7 @@ public class Core : MapComponent
         if (Find.TickManager.TicksAbs % GenDate.TicksPerQuadrum != GenDate.TicksPerHour) return;
 
         // 배당금 지급
-        for (var i = 0; i < ar_faction.Count; i++) util.giveDividend(ar_faction[i], ar_warbondDef[i]);
+        for (var i = 0; i < ar_faction.Count; i++) Util.GiveDividend(ar_faction[i], ar_warbondDef[i]);
     }
 
 
@@ -317,7 +317,7 @@ public class Core : MapComponent
         }
 
 
-        if (modBase.use_rimwar)
+        if (ModBase.use_rimwar)
         {
             // 림워
             try
@@ -342,7 +342,7 @@ public class Core : MapComponent
                                 change = 1f;
                                 resetChangeScale();
                                 changeScale *= Mathf.Min(1f,
-                                    1500f * modBase.rimwarPriceFactor / getRimwarPriceByDef(f));
+                                    1500f * ModBase.RimwarPriceFactor / getRimwarPriceByDef(f));
                                 if (success)
                                 {
                                     change = 1f + changeScale;
@@ -366,7 +366,7 @@ public class Core : MapComponent
                                 price += data.TotalFactionPoints;
                             }
 
-                            price *= modBase.rimwarPriceFactor;
+                            price *= ModBase.RimwarPriceFactor;
                             WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, price);
                             WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, price);
                             ar_warbondDef[ar_faction.IndexOf(f)].SetStatBaseValue(StatDefOf.MarketValue, price);
@@ -390,7 +390,7 @@ public class Core : MapComponent
                         change = 1f;
                         resetChangeScale();
                         changeScale *= Mathf.Min(1f,
-                            1500f * modBase.rimwarPriceFactor / getRimwarPriceByDef(f));
+                            1500f * ModBase.RimwarPriceFactor / getRimwarPriceByDef(f));
                         if (!success)
                         {
                             change = 1f + changeScale;
@@ -414,7 +414,7 @@ public class Core : MapComponent
                         price += data.TotalFactionPoints;
                     }
 
-                    price *= modBase.rimwarPriceFactor;
+                    price *= ModBase.RimwarPriceFactor;
                     WorldComponentPriceSaveLoad.SaveTrend(f2, AbsTickGame, price);
                     WorldComponentPriceSaveLoad.SavePrice(f2, AbsTickGame, price);
                     ar_warbondDef[ar_faction.IndexOf(f2)].SetStatBaseValue(StatDefOf.MarketValue, price);
@@ -555,7 +555,7 @@ public class Core : MapComponent
 
             t.tickerType = TickerType.Rare;
 
-            if (modBase.limitDate > 0)
+            if (ModBase.LimitDate > 0)
             {
                 var cp_lifespan = new CompProperties_Lifespan
                 {
@@ -610,7 +610,7 @@ public class Core : MapComponent
             var cp = t.GetCompProperties<CompProperties_Lifespan>();
             if (cp == null) continue;
 
-            cp.lifespanTicks = GenDate.TicksPerDay * modBase.limitDate;
+            cp.lifespanTicks = GenDate.TicksPerDay * ModBase.LimitDate;
         }
     }
 
@@ -620,7 +620,7 @@ public class Core : MapComponent
                  where
                      i.defName.Contains("rs_warbond")
                  select i)
-            i.baseChance = 3f * modBase.priceEvent_multiply;
+            i.baseChance = 3f * ModBase.PriceEventMultiply;
     }
 
 
@@ -643,7 +643,7 @@ public class Core : MapComponent
 
     public static void changeRimwarAllFactionPower(FloatRange changeScaleRange, float increasePer)
     {
-        if (!modBase.use_rimwar) return;
+        if (!ModBase.use_rimwar) return;
 
         foreach (var f in Find.FactionManager.AllFactions)
         {
@@ -653,7 +653,7 @@ public class Core : MapComponent
             var multiply = 1f;
             if (Rand.Chance(increasePer))
             {
-                var nerfForTooMuchPowerful = Mathf.Min(1f, 1500f * modBase.rimwarPriceFactor / getRimwarPrice(f));
+                var nerfForTooMuchPowerful = Mathf.Min(1f, 1500f * ModBase.RimwarPriceFactor / getRimwarPrice(f));
                 multiply += Rand.Range(changeScaleRange.min, changeScaleRange.max) * nerfForTooMuchPowerful;
             }
             else
@@ -668,7 +668,7 @@ public class Core : MapComponent
     public static float getRimwarPriceByDef(FactionDef fd)
     {
         var price = -1f;
-        if (!modBase.use_rimwar) return price;
+        if (!ModBase.use_rimwar) return price;
 
         // 림워
         try
@@ -682,7 +682,7 @@ public class Core : MapComponent
                             ? WorldUtility.GetRimWarDataForFaction(f).TotalFactionPoints
                             : 0;
 
-                price *= modBase.rimwarPriceFactor;
+                price *= ModBase.RimwarPriceFactor;
                 price = Mathf.Max(1f, price);
             }))();
         }
@@ -696,7 +696,7 @@ public class Core : MapComponent
     public static float getRimwarPrice(Faction f)
     {
         var price = -1f;
-        if (!modBase.use_rimwar) return price;
+        if (!ModBase.use_rimwar) return price;
 
         // 림워
         try
@@ -706,7 +706,7 @@ public class Core : MapComponent
                 price = WorldUtility.GetRimWarDataForFaction(f) != null
                     ? WorldUtility.GetRimWarDataForFaction(f).TotalFactionPoints
                     : 0;
-                price *= modBase.rimwarPriceFactor;
+                price *= ModBase.RimwarPriceFactor;
                 price = Mathf.Max(1f, price);
             }))();
         }

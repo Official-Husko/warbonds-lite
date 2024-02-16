@@ -39,7 +39,7 @@ public class FactionPriceData : IExposable
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToPriceData.TryGetValue(unitTime, out var price)) return price;
 
-        if (modBase.use_rimwar && FactionDef.Named(defname) != null)
+        if (ModBase.use_rimwar && FactionDef.Named(defname) != null)
             return Core.getRimwarPriceByDef(FactionDef.Named(defname));
 
         return FactionDef.Named(defname) != null
@@ -60,7 +60,7 @@ public class FactionPriceData : IExposable
         var unitTime = Mathf.FloorToInt(tick / modularTicksUnit);
         if (timeToTrendData.TryGetValue(unitTime, out var trend)) return trend;
 
-        if (modBase.use_rimwar && FactionDef.Named(defname) != null)
+        if (ModBase.use_rimwar && FactionDef.Named(defname) != null)
             return Core.getRimwarPriceByDef(FactionDef.Named(defname));
 
         return FactionDef.Named(defname) != null

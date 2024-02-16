@@ -12,7 +12,7 @@ internal class Patch_Tradeable_InitPriceDataIfNeeded
         if (__instance.ThingDef.tradeTags == null || !__instance.ThingDef.tradeTags.Contains("warbond")) return;
 
         ___pricePlayerBuy = __instance.ThingDef.BaseMarketValue;
-        ___pricePlayerSell = __instance.ThingDef.BaseMarketValue * modBase.sellPrice *
+        ___pricePlayerSell = __instance.ThingDef.BaseMarketValue * ModBase.SellPrice *
                              (__instance.AnyThing.HitPoints / (float)__instance.AnyThing.MaxHitPoints);
     }
 }

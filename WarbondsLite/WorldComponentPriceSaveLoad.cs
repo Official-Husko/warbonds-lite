@@ -62,7 +62,7 @@ namespace WarbondsLite
         /// </summary>
         private FactionPriceData GetFactionPriceDataFrom(FactionDef f)
         {
-            var key = util.factionDefNameToKey(f.defName);
+            var key = Util.FactionDefNameToKey(f.defName);
 
             // Try to get existing data or create a new one if not found
             if (!_factionToPriceData.TryGetValue(key, out var value))
@@ -105,10 +105,10 @@ namespace WarbondsLite
                 // Update faction data during subsequent initialization
                 foreach (var f in Core.ar_faction)
                 {
-                    var key = util.factionDefNameToKey(f.defName);
+                    var key = Util.FactionDefNameToKey(f.defName);
                     if (_factionToPriceData.TryGetValue(key, out var rs))
                     {
-                        rs.defname = util.keyToFactionDefName(key);
+                        rs.defname = Util.KeyToFactionDefName(key);
                     }
                 }
             }
