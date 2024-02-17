@@ -69,10 +69,10 @@ namespace WarbondsLite
             {
                 value = new FactionPriceData
                 {
-                    defname = f.defName,
-                    label = f.label,
+                    DefName = f.defName,
+                    Label = f.label,
                     // Get the first color from the colorSpectrum list or default to Color.white
-                    color = f.colorSpectrum is { Count: > 0 } ? f.colorSpectrum[0] : Color.white
+                    Color = f.colorSpectrum is { Count: > 0 } ? f.colorSpectrum[0] : Color.white
                 };
 
                 _factionToPriceData[key] = value;
@@ -108,7 +108,7 @@ namespace WarbondsLite
                     var key = Util.FactionDefNameToKey(f.defName);
                     if (_factionToPriceData.TryGetValue(key, out var rs))
                     {
-                        rs.defname = Util.KeyToFactionDefName(key);
+                        rs.DefName = Util.KeyToFactionDefName(key);
                     }
                 }
             }

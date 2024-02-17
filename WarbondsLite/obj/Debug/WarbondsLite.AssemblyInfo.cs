@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WarbondsLite")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.4.2")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a00c208cdf90747f6d499073064a061f5c0265cd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80c1458d96e68fe80581007037449a7695141ad2")]
 [assembly: System.Reflection.AssemblyProductAttribute("WarbondsLite")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WarbondsLite")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
