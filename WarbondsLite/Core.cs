@@ -65,7 +65,7 @@ public class Core : MapComponent
 
         if (AbsTickGame % GenDate.TicksPerDay == 0)
         {
-            if (ModBase.use_rimwar)
+            if (ModBase.UseRimWar)
             {
                 // 림워
                 try
@@ -317,7 +317,7 @@ public class Core : MapComponent
         }
 
 
-        if (ModBase.use_rimwar)
+        if (ModBase.UseRimWar)
         {
             // 림워
             try
@@ -643,7 +643,7 @@ public class Core : MapComponent
 
     public static void changeRimwarAllFactionPower(FloatRange changeScaleRange, float increasePer)
     {
-        if (!ModBase.use_rimwar) return;
+        if (!ModBase.UseRimWar) return;
 
         foreach (var f in Find.FactionManager.AllFactions)
         {
@@ -668,7 +668,7 @@ public class Core : MapComponent
     public static float getRimwarPriceByDef(FactionDef fd)
     {
         var price = -1f;
-        if (!ModBase.use_rimwar) return price;
+        if (!ModBase.UseRimWar) return price;
 
         // 림워
         try
@@ -696,7 +696,7 @@ public class Core : MapComponent
     public static float getRimwarPrice(Faction f)
     {
         var price = -1f;
-        if (!ModBase.use_rimwar) return price;
+        if (!ModBase.UseRimWar) return price;
 
         // 림워
         try
