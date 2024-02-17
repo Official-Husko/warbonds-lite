@@ -96,7 +96,7 @@ namespace WarbondsLite
                 {
                     if (Core.isWarbondFaction(f))
                     {
-                        SavePrice(f, ticksNow, Core.getRimwarPriceByDef(f));
+                        SavePrice(f, ticksNow, Core.GetRimwarPriceByDef(f));
                     }
                 }
             }

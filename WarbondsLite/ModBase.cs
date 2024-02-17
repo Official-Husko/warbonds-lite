@@ -128,7 +128,7 @@ namespace WarbondsLite
 
             SettingsChanged();
 
-            Core.patchDef2();
+            Core.PatchDef2();
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace WarbondsLite
             MilitaryAidMultiply = _militaryAidMultiplySetting.Value;
             PriceEventMultiply = _priceEventMultiplySetting.Value;
 
-            Core.patchIncident();
+            Core.PatchIncident();
         }
 
         /// <summary>

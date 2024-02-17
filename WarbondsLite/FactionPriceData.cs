@@ -100,9 +100,9 @@ namespace WarbondsLite
             if (factionDef != null)
             {
                 if (ModBase.UseRimWar)
-                    return Core.getRimwarPriceByDef(factionDef);
+                    return Core.GetRimwarPriceByDef(factionDef);
 
-                return Core.getDefaultPrice(factionDef);
+                return Core.GetDefaultPrice(factionDef);
             }
 
             return Rand.Range(200f, 6000f);

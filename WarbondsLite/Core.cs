@@ -78,22 +78,22 @@ public class Core : MapComponent
                             {
                                 case "rs_warbond_rise":
                                     // 주가 급상승
-                                    changeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.8f);
+                                    ChangeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.8f);
                                     break;
                                 case "rs_warbond_fall":
                                     // 주가 급하강
-                                    changeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.2f);
+                                    ChangeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.2f);
                                     break;
                                 case "rs_warbond_change":
                                     // 주가 급변동
-                                    changeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.5f);
+                                    ChangeRimwarAllFactionPower(new FloatRange(0.1f, 0.4f), 0.5f);
                                     break;
                             }
 
                         // 현재 Faction power를 가격으로 적용
                         foreach (var fd in ar_faction)
                         {
-                            var price = getRimwarPriceByDef(fd);
+                            var price = GetRimwarPriceByDef(fd);
                             WorldComponentPriceSaveLoad.SaveTrend(fd, AbsTickGame, price);
                             WorldComponentPriceSaveLoad.SavePrice(fd, AbsTickGame, price);
                             ar_warbondDef[ar_faction.IndexOf(fd)].SetStatBaseValue(StatDefOf.MarketValue, price);
@@ -278,9 +278,9 @@ public class Core : MapComponent
                     if (!(newPrice < ModBase.DelistingPrice)) continue;
 
                     WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame - GenDate.TicksPerDay,
-                        getDefaultPrice(f));
-                    WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, getDefaultPrice(f));
-                    WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, getDefaultPrice(f));
+                        GetDefaultPrice(f));
+                    WorldComponentPriceSaveLoad.SaveTrend(f, AbsTickGame, GetDefaultPrice(f));
+                    WorldComponentPriceSaveLoad.SavePrice(f, AbsTickGame, GetDefaultPrice(f));
 
                     if (Util.RemoveAllThingByDef(ar_warbondDef[i]))
                         Messages.Message(new Message(
@@ -342,7 +342,7 @@ public class Core : MapComponent
                                 change = 1f;
                                 resetChangeScale();
                                 changeScale *= Mathf.Min(1f,
-                                    1500f * ModBase.RimwarPriceFactor / getRimwarPriceByDef(f));
+                                    1500f * ModBase.RimwarPriceFactor / GetRimwarPriceByDef(f));
                                 if (success)
                                 {
                                     change = 1f + changeScale;
@@ -390,7 +390,7 @@ public class Core : MapComponent
                         change = 1f;
                         resetChangeScale();
                         changeScale *= Mathf.Min(1f,
-                            1500f * ModBase.RimwarPriceFactor / getRimwarPriceByDef(f));
+                            1500f * ModBase.RimwarPriceFactor / GetRimwarPriceByDef(f));
                         if (!success)
                         {
                             change = 1f + changeScale;
@@ -599,61 +599,85 @@ public class Core : MapComponent
             DefGenerator.AddImpliedDef(t);
         }
 
-        patchIncident();
+        PatchIncident();
     }
 
 
-    public static void patchDef2()
+    /// <summary>
+    /// Applies a patch to update the lifespanTicks property of CompProperties_Lifespan for specified definitions.
+    /// </summary>
+    public static void PatchDef2()
     {
         foreach (var t in ar_warbondDef)
         {
-            var cp = t.GetCompProperties<CompProperties_Lifespan>();
-            if (cp == null) continue;
-
-            cp.lifespanTicks = GenDate.TicksPerDay * ModBase.LimitDate;
+            if (t.GetCompProperties<CompProperties_Lifespan>() is { } cp)
+            {
+                cp.lifespanTicks = GenDate.TicksPerDay * ModBase.LimitDate;
+            }
         }
     }
 
-    public static void patchIncident()
+    /// <summary>
+    /// Applies a patch to update the baseChance property of IncidentDef instances containing "rs_warbond" in their defName.
+    /// </summary>
+    public static void PatchIncident()
     {
-        foreach (var i in from i in DefDatabase<IncidentDef>.AllDefs
-                 where
-                     i.defName.Contains("rs_warbond")
-                 select i)
+        foreach (var i in DefDatabase<IncidentDef>.AllDefs.Where(i => i.defName.Contains("rs_warbond")))
+        {
             i.baseChance = 3f * ModBase.PriceEventMultiply;
+        }
     }
 
-
-    public static float getDefaultPrice(FactionDef fd)
+    /// <summary>
+    /// Retrieves the default price based on the faction's graphStyle.
+    /// </summary>
+    /// <param name="fd">The FactionDef for which to retrieve the default price.</param>
+    /// <returns>The default price based on the faction's graphStyle.</returns>
+    public static float GetDefaultPrice(FactionDef fd)
     {
         var index = ar_faction.IndexOf(fd);
-        if (index < 0 || index >= ar_graphStyle.Count) return Rand.Range(200f, 6000f);
+
+        // If the faction is not found or the index is out of range, return a random value.
+        if (index < 0 || index >= ar_graphStyle.Count)
+        {
+            return Rand.Range(200f, 6000f);
+        }
 
         var style = ar_graphStyle[index];
-        switch (style)
+
+        // Determine the default price based on the faction's graphStyle.
+        return style switch
         {
-            case en_graphStyle.small:
-                return Rand.Range(350f, 450f);
-            default:
-                return Rand.Range(1750f, 2050f);
-            case en_graphStyle.big:
-                return Rand.Range(4100f, 4500f);
-        }
+            en_graphStyle.small => Rand.Range(350f, 450f),
+            en_graphStyle.big => Rand.Range(4100f, 4500f),
+            _ => Rand.Range(1750f, 2050f),
+        };
     }
 
-    public static void changeRimwarAllFactionPower(FloatRange changeScaleRange, float increasePer)
+
+    /// <summary>
+    /// Changes the RimWar points for all factions based on a random factor and scaling range.
+    /// </summary>
+    /// <param name="changeScaleRange">The range used to scale the RimWar points.</param>
+    /// <param name="increasePer">The probability of increasing the RimWar points.</param>
+    public static void ChangeRimwarAllFactionPower(FloatRange changeScaleRange, float increasePer)
     {
+        // Check if RimWar is enabled
         if (!ModBase.UseRimWar) return;
 
-        foreach (var f in Find.FactionManager.AllFactions)
+        foreach (var faction in Find.FactionManager.AllFactions)
         {
-            var data = WorldUtility.GetRimWarDataForFaction(f);
+            var data = WorldUtility.GetRimWarDataForFaction(faction);
+            
+            // Skip factions without RimWar data
             if (data == null) continue;
 
             var multiply = 1f;
+            
+            // Adjust RimWar points based on random chance and scaling range
             if (Rand.Chance(increasePer))
             {
-                var nerfForTooMuchPowerful = Mathf.Min(1f, 1500f * ModBase.RimwarPriceFactor / getRimwarPrice(f));
+                var nerfForTooMuchPowerful = Mathf.Min(1f, 1500f * ModBase.RimwarPriceFactor / GetRimwarPrice(faction));
                 multiply += Rand.Range(changeScaleRange.min, changeScaleRange.max) * nerfForTooMuchPowerful;
             }
             else
@@ -661,59 +685,47 @@ public class Core : MapComponent
                 multiply -= Rand.Range(changeScaleRange.min, changeScaleRange.max);
             }
 
-            foreach (var st in data.WarSettlementComps) st.RimWarPoints = Mathf.RoundToInt(st.RimWarPoints * multiply);
+            // Calculate the adjustment factor once outside the loop
+            var adjustmentFactor = Mathf.RoundToInt(multiply);
+
+            // Apply the adjustment factor to each settlement's RimWar points
+            foreach (var st in data.WarSettlementComps) st.RimWarPoints *= adjustmentFactor;
         }
     }
 
-    public static float getRimwarPriceByDef(FactionDef fd)
+    /// <summary>
+    /// Gets the total RimWar points for factions with a specific faction definition.
+    /// </summary>
+    /// <param name="factionDef">The faction definition to filter factions.</param>
+    /// <returns>The total RimWar points for factions with the specified definition.</returns>
+    public static float GetRimwarPriceByDef(FactionDef factionDef)
     {
-        var price = -1f;
-        if (!ModBase.UseRimWar) return price;
+        // Check if RimWar is enabled
+        if (!ModBase.UseRimWar) return -1f;
 
-        // 림워
-        try
-        {
-            ((Action)(() =>
-            {
-                price = 0;
-                foreach (var f in Find.FactionManager.AllFactions)
-                    if (f.def == fd)
-                        price += WorldUtility.GetRimWarDataForFaction(f) != null
-                            ? WorldUtility.GetRimWarDataForFaction(f).TotalFactionPoints
-                            : 0;
+        // Calculate and return the total RimWar points for factions with the specified definition
+        var price = Find.FactionManager.AllFactions
+            .Where(f => f.def == factionDef)
+            .Sum(f => WorldUtility.GetRimWarDataForFaction(f)?.TotalFactionPoints ?? 0) * ModBase.RimwarPriceFactor;
 
-                price *= ModBase.RimwarPriceFactor;
-                price = Mathf.Max(1f, price);
-            }))();
-        }
-        catch (TypeLoadException)
-        {
-        }
-
-        return price;
+        return Mathf.Max(1f, price);
     }
 
-    public static float getRimwarPrice(Faction f)
+    /// <summary>
+    /// Gets the total RimWar points for a specific faction.
+    /// </summary>
+    /// <param name="faction">The faction to retrieve RimWar points for.</param>
+    /// <returns>The total RimWar points for the specified faction.</returns>
+    public static float GetRimwarPrice(Faction faction)
     {
-        var price = -1f;
-        if (!ModBase.UseRimWar) return price;
+        // Check if RimWar is enabled
+        if (!ModBase.UseRimWar) return -1f;
 
-        // 림워
-        try
-        {
-            ((Action)(() =>
-            {
-                price = WorldUtility.GetRimWarDataForFaction(f) != null
-                    ? WorldUtility.GetRimWarDataForFaction(f).TotalFactionPoints
-                    : 0;
-                price *= ModBase.RimwarPriceFactor;
-                price = Mathf.Max(1f, price);
-            }))();
-        }
-        catch (TypeLoadException)
-        {
-        }
+        // Calculate and return the total RimWar points for the specified faction
+        var factionData = WorldUtility.GetRimWarDataForFaction(faction);
+        var price = (factionData?.TotalFactionPoints ?? 0) * ModBase.RimwarPriceFactor;
 
-        return price;
+        return Mathf.Max(1f, price);
     }
+
 }
