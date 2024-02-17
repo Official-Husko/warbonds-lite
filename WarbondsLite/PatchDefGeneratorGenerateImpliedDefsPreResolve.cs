@@ -13,6 +13,6 @@ namespace WarbondsLite
         /// Prefix method called before the original GenerateImpliedDefs_PreResolve method.
         /// </summary>
         [HarmonyPrefix]
-        public static void Prefix() => Core.patchDef();
+        public static void Prefix() => Core.PatchDef();
     }
 }

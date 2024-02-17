@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWar.Planet;
@@ -431,76 +431,20 @@ public class Core : MapComponent
         float prev;
         if (f != null)
         {
-            index = ar_faction.IndexOf(f);
-            if (index >= 0)
-            {
-                prev = WorldComponentPriceSaveLoad.LoadTrend(f, targetTime);
-                resetChangeScale();
-                changeScale *= Mathf.Min(1f, 1500f / prev);
-                if (success)
-                {
-                    change = 1f + changeScale;
-                    Messages.Message(new Message(
-                        "bond.quest.up".Translate(ar_warbondDef[index].label, (changeScale * 100f).ToString("0.#")),
-                        MessageTypeDefOf.ThreatSmall));
-                }
-                else
-                {
-                    change = 1f - changeScale;
-                    Messages.Message(new Message(
-                        "bond.quest.down".Translate(ar_warbondDef[index].label,
-                            "-" + (changeScale * 100f).ToString("0.#")), MessageTypeDefOf.ThreatSmall));
-                }
-
-                WorldComponentPriceSaveLoad.SaveTrend(f, targetTime, change * prev);
-                prev = WorldComponentPriceSaveLoad.LoadPrice(f, targetTime);
-                WorldComponentPriceSaveLoad.SavePrice(f, targetTime, change * prev);
-                ar_warbondDef[index].SetStatBaseValue(StatDefOf.MarketValue, change * prev);
-            }
-        }
 
 
-        if (f2 == null) return;
-
-        index = ar_faction.IndexOf(f2);
-        if (index < 0) return;
-
-        prev = WorldComponentPriceSaveLoad.LoadTrend(f2, targetTime);
-        resetChangeScale();
-        changeScale *= Mathf.Min(1f, 1500f / prev);
-        if (!success)
-        {
-            change = 1f + changeScale;
-            Messages.Message(new Message(
-                "bond.quest.up".Translate(ar_warbondDef[index].label, (changeScale * 100f).ToString("0.#")),
-                MessageTypeDefOf.ThreatSmall));
-        }
-        else
-        {
-            change = 1f - changeScale;
-            Messages.Message(new Message(
-                "bond.quest.down".Translate(ar_warbondDef[index].label,
-                    "-" + (changeScale * 100f).ToString("0.#")), MessageTypeDefOf.ThreatSmall));
-        }
-
-        WorldComponentPriceSaveLoad.SaveTrend(f2, targetTime, change * prev);
-        prev = WorldComponentPriceSaveLoad.LoadPrice(f2, targetTime);
-        WorldComponentPriceSaveLoad.SavePrice(f2, targetTime, change * prev);
-        ar_warbondDef[index].SetStatBaseValue(StatDefOf.MarketValue, change * prev);
-    }
-
-
-    public static void patchDef()
+    /// <summary>
+    /// Patch the definition of warbond items for each warbond faction.
+    /// </summary>
+    public static void PatchDef()
     {
-        // 채권 아이템 DEF 생성
-        foreach (var f in from f in DefDatabase<FactionDef>.AllDefs
-                 where
-                     isWarbondFaction(f)
-                 select f)
+        // Iterate through all faction definitions and create warbond items
+        foreach (var factionDef in DefDatabase<FactionDef>.AllDefs.Where(isWarbondFaction))
         {
-            var t = new ThingDef
+            // Create a new ThingDef for warbond item
+            var thingDef = new ThingDef
             {
-                // base
+                // Basic properties
                 thingClass = typeof(ThingWithComps),
                 category = ThingCategory.Item,
                 resourceReadoutPriority = ResourceCountPriority.Middle,
@@ -511,97 +455,83 @@ public class Core : MapComponent
                 drawGUIOverlay = true,
                 rotatable = false,
                 pathCost = 14,
-                // detail
-                defName = $"oh_warbond_{f.defName}",
-                label = string.Format("warbond_t".Translate(), f.label),
-                description = string.Format("warbond_d".Translate(), f.label),
+
+                // Detail properties
+                defName = $"oh_warbond_{factionDef.defName}",
+                label = string.Format("warbond_t".Translate(), factionDef.label),
+                description = string.Format("warbond_d".Translate(), factionDef.label),
                 graphicData = new GraphicData
                 {
-                    texPath = f.factionIconPath
-                }
+                    texPath = factionDef.factionIconPath,
+                    // Use the first color from the colorSpectrum, or white if colorSpectrum is null
+                    color = factionDef.colorSpectrum?.FirstOrDefault() ?? Color.white,
+                    graphicClass = typeof(Graphic_Single)
+                },
+                soundInteract = SoundDef.Named("Silver_Drop"),
+                soundDrop = SoundDef.Named("Silver_Drop"),
+
+                // Stat modifications
+                healthAffectsPrice = true,
+                statBases = new List<StatModifier>(),
+                useHitPoints = true,
+                stackLimit = 999,
+
+                // Trade and market properties
+                tradeability = Tradeability.All,
+                tradeTags = new List<string> { "warbond" },
+                tickerType = TickerType.Rare
             };
 
-            if (f.colorSpectrum is { Count: > 0 }) t.graphicData.color = f.colorSpectrum[0];
+            // SetStatBaseValues
+            thingDef.SetStatBaseValue(StatDefOf.MaxHitPoints, 30f);
+            thingDef.SetStatBaseValue(StatDefOf.Flammability, 1f);
+            thingDef.SetStatBaseValue(StatDefOf.MarketValue, basicPrice);
+            thingDef.SetStatBaseValue(StatDefOf.Mass, 0.008f);
 
-            t.graphicData.graphicClass = typeof(Graphic_Single);
-            t.soundInteract = SoundDef.Named("Silver_Drop");
-            t.soundDrop = SoundDef.Named("Silver_Drop");
-
-            t.healthAffectsPrice = true;
-            t.statBases = new List<StatModifier>();
-
-
-            t.useHitPoints = true;
-            t.SetStatBaseValue(StatDefOf.MaxHitPoints, 30f);
-            t.SetStatBaseValue(StatDefOf.Flammability, 1f);
-
-            t.SetStatBaseValue(StatDefOf.MarketValue, basicPrice);
-            t.SetStatBaseValue(StatDefOf.Mass, 0.008f);
-
-            t.thingCategories = new List<ThingCategoryDef>();
-
-            t.stackLimit = 999;
-
-            t.burnableByRecipe = true;
-            t.smeltable = false;
-            t.terrainAffordanceNeeded = TerrainAffordanceDefOf.Medium;
-
-            var thingCategoryDef = ThingCategoryDef.Named("warbond");
-            if (thingCategoryDef != null) t.thingCategories.Add(thingCategoryDef);
-
-            t.tradeability = Tradeability.All;
-
-            t.tradeTags = new List<string> { "warbond" };
-
-            t.tickerType = TickerType.Rare;
-
+            // Add lifespan component if ModBase.LimitDate is greater than 0
             if (ModBase.LimitDate > 0)
-            {
-                var cp_lifespan = new CompProperties_Lifespan
-                {
-                    lifespanTicks = GenDate.TicksPerDay
-                };
-                t.comps.Add(cp_lifespan);
-            }
+                thingDef.comps.Add(new CompProperties_Lifespan { lifespanTicks = GenDate.TicksPerDay });
 
+            // Add warbond thing category
+            var thingCategoryDef = ThingCategoryDef.Named("warbond");
+            if (thingCategoryDef != null) thingDef.thingCategories.Add(thingCategoryDef);
 
-            // 등록
-            ar_warbondDef.Add(t);
-            ar_faction.Add(f);
-            switch (f.defName)
+            // Add ThingDef to relevant lists
+            ar_warbondDef.Add(thingDef);
+            ar_faction.Add(factionDef);
+
+            // Determine the graph style based on faction properties
+            switch (factionDef.defName)
             {
                 default:
-                    if (f.modContentPack.PackageId.Contains("ludeon"))
-                        ar_graphStyle.Add(!f.naturalEnemy ? en_graphStyle.normal : en_graphStyle.small);
-                    else
-                        switch (ar_graphStyle.Count % 4)
-                        {
-                            default:
-                                ar_graphStyle.Add(en_graphStyle.normal);
-                                break;
-                            case 0:
-                                ar_graphStyle.Add(en_graphStyle.big);
-                                break;
-                            case 2:
-                                ar_graphStyle.Add(en_graphStyle.small);
-                                break;
-                        }
-
+                    // Determine graph style based on package ID and natural enemy status
+                    int switchResult = ar_graphStyle.Count % 4;
+                    ar_graphStyle.Add(factionDef.modContentPack.PackageId.Contains("ludeon") ?
+                                      (!factionDef.naturalEnemy ? en_graphStyle.normal : en_graphStyle.small) :
+                                      switchResult switch
+                                      {
+                                          0 => en_graphStyle.big,
+                                          2 => en_graphStyle.small,
+                                          _ => en_graphStyle.normal
+                                      });
                     break;
                 case "Pirate":
+                    // For "Pirate" faction, use small graph style
                     ar_graphStyle.Add(en_graphStyle.small);
                     break;
                 case "Empire":
+                    // For "Empire" faction, use big graph style
                     ar_graphStyle.Add(en_graphStyle.big);
                     break;
             }
 
-            DefGenerator.AddImpliedDef(t);
+            // Add implied definition for the ThingDef
+            DefGenerator.AddImpliedDef(thingDef);
         }
 
+        // Perform additional patching for incidents
         PatchIncident();
     }
-
 
     /// <summary>
     /// Applies a patch to update the lifespanTicks property of CompProperties_Lifespan for specified definitions.
